@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
 app.use(express.static('public'));
 
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, './public/index.html')));
+app.get('/*', (req, res) => res.sendFile(path.join(__dirname, './public/index.html')));
 app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, './public/notes.html')));
 app.get('/api/notes', (req, res) => res.sendFile(path.join(__dirname, './db/db.json')));
 
@@ -29,8 +29,10 @@ app.post('/api/notes', (req, res) => {
 app.delete('/api/notes/:id', (req, res) => {
     const id = req.params.id;
     let notes = JSON.parse(fs.readFileSync('./db/db.json', 'utf-8'));
+    //filters out object with matching id
     notes = notes.filter(note => note.id !== id);
 
+    //rewrites db.json after filter
     fs.writeFileSync('./db/db.json', JSON.stringify(notes), 'utf-8');
     res.send(notes);
 });
